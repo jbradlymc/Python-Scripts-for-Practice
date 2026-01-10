@@ -8,6 +8,8 @@ board = [['1', '2', '3'],
 
 
 def display_board(board):
+    # The function accepts one parameter containing the board's current status
+    # and prints it out to the console.
     print("+-------" * 3, "+", sep="")
     for row in range(3):
         print("|       " * 3, "|", sep="")
@@ -64,22 +66,55 @@ def draw_move(board):
         row, col = free_fields[random_index]
         board[row][col] = 'X'
 
-# def victory_for(board, sign):
+
+def victory_for(board, sign):
     # The function analyzes the board's status in order to check if
     # the player using 'O's or 'X's has won the game
+    # Checks who won the game
+    # Check rows
+    for r in range(3):
+        if all(board[r][c] == sign for c in range(3)):
+            return True
+
+    # Check columns
+    for c in range(3):
+        if all(board[r][c] == sign for r in range(3)):
+            return True
+
+    # Check diagonals
+    if board[0][0] == board[1][1] == board[2][2] == sign:
+        return True
+    if board[0][2] == board[1][1] == board[2][0] == sign:
+        return True
+    return False
 
 
 board[1][1] = 'X'
 display_board(board)
-enter_move(board)
-draw_move(board)
-display_board(board)
-enter_move(board)
-draw_move(board)
-display_board(board)
-enter_move(board)
-draw_move(board)
-display_board(board)
-enter_move(board)
-draw_move(board)
-display_board(board)
+
+while True:
+
+    # Check for draw
+    if not make_list_of_free_fields(board):
+        print("No one won. It's a draw.")
+        break
+
+    # Player move
+    enter_move(board)
+    display_board(board)
+    if victory_for(board, 'O'):
+        print("You win!")
+        break
+
+    # Check for draw after player's move
+    if not make_list_of_free_fields(board):
+        print("No one won. It's a draw.")
+        break
+
+    # Computer move
+    print("Computer's turn...")
+    draw_move(board)
+    display_board(board)
+    if victory_for(board, 'X'):
+        print("Computer wins!")
+        break
